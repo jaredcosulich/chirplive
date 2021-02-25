@@ -1,5 +1,6 @@
 defmodule ChirpliveWeb.Router do
   use ChirpliveWeb, :router
+  use Pow.Phoenix.Router
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -14,17 +15,32 @@ defmodule ChirpliveWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+      error_handler: Pow.Phoenix.PlugErrorHandler
+  end
+
+  scope "/" do
+    pipe_through :browser
+
+    pow_routes()
+  end
+
   scope "/", ChirpliveWeb do
-    pipe_through(:browser)
+    pipe_through [:browser, :protected]
+
+    live("/posts/new", PostLive.Index, :new)
+    live("/posts/:id/edit", PostLive.Index, :edit)
+    live("/posts/:id/show/edit", PostLive.Show, :edit)
+  end
+
+  scope "/", ChirpliveWeb do
+    pipe_through [:browser, :protected]
 
     live("/", PageLive, :index)
 
     live("/posts", PostLive.Index, :index)
-    live("/posts/new", PostLive.Index, :new)
-    live("/posts/:id/edit", PostLive.Index, :edit)
-
     live("/posts/:id", PostLive.Show, :show)
-    live("/posts/:id/show/edit", PostLive.Show, :edit)
   end
 
   # Other scopes may use custom stacks.
