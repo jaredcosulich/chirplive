@@ -21,6 +21,12 @@ defmodule ChirpliveWeb.PostLive.PostComponent do
           <div class='column'>
             <i class='fas fa-retweet'></i> <%= @post.reposts_count %>
           </div>
+          <div class='column'>
+            <%= live_patch to: Routes.post_index_path(@socket, :edit, @post.id) do %>
+              <i class='far fa-edit'></i>
+            <% end %>
+            <%#= link to: "#", phx_click: "delete", phx_value_id: @post.id, %>
+          </div>
         </div>
       </div>
     """
