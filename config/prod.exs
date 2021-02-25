@@ -3,6 +3,9 @@ use Mix.Config
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
 # when generating URLs.
+
+config :chirplive, Chirplive.Repo, pool_size: 2
+
 #
 # Note we also include the path to a cache manifest
 # containing the digested version of static files. This
