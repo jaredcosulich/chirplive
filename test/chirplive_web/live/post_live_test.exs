@@ -5,9 +5,13 @@ defmodule ChirpliveWeb.PostLiveTest do
 
   alias Chirplive.Timeline
 
-  @create_attrs %{body: "some body", likes_count: 42, reposts_count: 42, username: "some username"}
-  @update_attrs %{body: "some updated body", likes_count: 43, reposts_count: 43, username: "some updated username"}
-  @invalid_attrs %{body: nil, likes_count: nil, reposts_count: nil, username: nil}
+  @create_attrs %{
+    body: "some body"
+  }
+  @update_attrs %{
+    body: "some updated body"
+  }
+  @invalid_attrs %{body: nil}
 
   defp fixture(:post) do
     {:ok, post} = Timeline.create_post(@create_attrs)
@@ -39,7 +43,7 @@ defmodule ChirpliveWeb.PostLiveTest do
 
       assert index_live
              |> form("#post-form", post: @invalid_attrs)
-             |> render_change() =~ "can&apos;t be blank"
+             |> render_change() =~ "can&#39;t be blank"
 
       {:ok, _, html} =
         index_live
@@ -54,14 +58,15 @@ defmodule ChirpliveWeb.PostLiveTest do
     test "updates post in listing", %{conn: conn, post: post} do
       {:ok, index_live, _html} = live(conn, Routes.post_index_path(conn, :index))
 
-      assert index_live |> element("#post-#{post.id} a", "Edit") |> render_click() =~
-               "Edit Post"
+      assert index_live
+             |> element("#post-#{post.id} a.edit")
+             |> render_click() =~ "Edit Post"
 
       assert_patch(index_live, Routes.post_index_path(conn, :edit, post))
 
       assert index_live
              |> form("#post-form", post: @invalid_attrs)
-             |> render_change() =~ "can&apos;t be blank"
+             |> render_change() =~ "can&#39;t be blank"
 
       {:ok, _, html} =
         index_live
@@ -76,7 +81,7 @@ defmodule ChirpliveWeb.PostLiveTest do
     test "deletes post in listing", %{conn: conn, post: post} do
       {:ok, index_live, _html} = live(conn, Routes.post_index_path(conn, :index))
 
-      assert index_live |> element("#post-#{post.id} a", "Delete") |> render_click()
+      assert index_live |> element("#post-#{post.id} a.delete") |> render_click()
       refute has_element?(index_live, "#post-#{post.id}")
     end
   end
@@ -101,7 +106,7 @@ defmodule ChirpliveWeb.PostLiveTest do
 
       assert show_live
              |> form("#post-form", post: @invalid_attrs)
-             |> render_change() =~ "can&apos;t be blank"
+             |> render_change() =~ "can&#39;t be blank"
 
       {:ok, _, html} =
         show_live
